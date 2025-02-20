@@ -3,24 +3,13 @@
 
 using namespace std;
 
-void renderingThread(sf::RenderWindow* window)
-{
-    // activate the window's context
-    window->setActive(true);
-
-    // the rendering loop
-    while (window->isOpen())
-    {
-        // draw...
-
-        // end the current frame
-        window->display();
-    }
-}
-
 int main()
 {
+    sf::ContextSettings settings;
+    settings.antiAliasingLevel = 1;
+
     sf::RenderWindow window(sf::VideoMode({1920u, 1080u}), "SFML works!");
+
     window.setPosition({0, 0});
     window.setVerticalSyncEnabled(true); // call it once after creating the window
     window.setFramerateLimit(60); // call it once after creating the window
