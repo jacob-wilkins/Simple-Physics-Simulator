@@ -1,6 +1,23 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
+using namespace std;
+
+void renderingThread(sf::RenderWindow* window)
+{
+    // activate the window's context
+    window->setActive(true);
+
+    // the rendering loop
+    while (window->isOpen())
+    {
+        // draw...
+
+        // end the current frame
+        window->display();
+    }
+}
+
 int main()
 {
     sf::RenderWindow window(sf::VideoMode({1920u, 1080u}), "SFML works!");
@@ -13,7 +30,7 @@ int main()
 
     while (window.isOpen())
     {
-        while (const std::optional event = window.pollEvent())
+        while (const optional event = window.pollEvent())
         {
             if (event->is<sf::Event::Closed>())
                 window.close();
