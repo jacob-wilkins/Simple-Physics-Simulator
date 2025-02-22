@@ -16,7 +16,7 @@ int main()
     window.setFramerateLimit(60); // call it once after creating the window
 
     Environment env(window);
-    env.addCircle(50.0f, {100.0f, 100.0f}, sf::Color::White);
+    env.addCircle(100.0f, {static_cast<float>(window.getSize().x / 2 - 100), static_cast<float>(window.getSize().y / 2 - 100)}, sf::Color::White);
 
     while (window.isOpen())
     {
