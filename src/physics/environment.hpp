@@ -31,6 +31,10 @@ class Environment {
             return objects;
         }
 
+        void removeCircles() {
+            objects.clear();
+        }
+
     private:
         std::vector<sf::CircleShape> objects;
         sf::RenderWindow& window;

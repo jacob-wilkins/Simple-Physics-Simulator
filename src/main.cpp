@@ -22,12 +22,20 @@ int main()
     {
         while (const optional event = window.pollEvent())
         {
+            // close button on the window
             if (event->is<sf::Event::Closed>()) {
                 window.close();
             }
 
+            // click left mouse button to add a circle
+            // very fast at the moment, need to change in the future
             if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
                 env.addCircle(50.0f, static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)), sf::Color::White);
+            }
+
+            // press D to remove all circles in the window
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+                env.removeCircles();
             }
         }
 
