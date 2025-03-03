@@ -1,6 +1,7 @@
 #include <vector>
 #include <cmath>
 #include <SFML/Graphics.hpp>
+#include "verlet.hpp"
 
 // TODO:
 // make new object to hold the velocity and other physics properties of an object
@@ -24,10 +25,13 @@ class Environment {
             sf::CircleShape circle(radius);
             circle.setPosition(pos);
             circle.setFillColor(color);
-            objects.push_back(circle);
+
+            Verlet verlet(circle, gravity);
+
+            objects.push_back(verlet);
         }
 
-        const std::vector<sf::CircleShape>& getCircles() const {
+        const std::vector<Verlet>& getCircles() const {
             return objects;
         }
 
@@ -35,22 +39,26 @@ class Environment {
             objects.clear();
         }
 
+        sf::Vector2f getGravity() {
+            return gravity;
+        }
+
     private:
-        std::vector<sf::CircleShape> objects;
+        std::vector<Verlet> objects;
         sf::RenderWindow& window;
         sf::Vector2u bounds = window.getSize();
         sf::Vector2f gravity = {0.0f, 9.8f};
 
         void addGravity(){
             for (auto& object : objects) {
-                object.move(gravity);
+                object.update();
             }
         }
 
         void checkBounds() {
             for (auto& object : objects) {
-                sf::Vector2f position = object.getPosition();
-                float radius = object.getRadius();
+                sf::Vector2f position = object.getCircle().getPosition();
+                float radius = object.getCircle().getRadius();
 
                 // Check left and right bounds
                 if (position.x < 0) {
@@ -66,6 +74,8 @@ class Environment {
                     position.y = bounds.y - 2 * radius;
                 }
 
+                object.setOldPosition(object.getPosition());
+                object.getCircle().move(position);
                 object.setPosition(position);
             }
         }

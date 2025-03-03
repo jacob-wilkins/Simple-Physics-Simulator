@@ -45,7 +45,7 @@ int main()
 
         // Draw all circles in the environment
         for (const auto& circle : env.getCircles()) {
-            window.draw(circle);
+            window.draw(circle.getCircle());
         }
 
         window.display();
