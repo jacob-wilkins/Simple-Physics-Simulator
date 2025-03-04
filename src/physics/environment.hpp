@@ -19,6 +19,7 @@ class Environment {
 
             addGravity();
             checkBounds();
+            removeDisappearedCircles();
         }
 
         void addCircle(float radius, sf::Vector2f pos, sf::Color color) {
@@ -26,7 +27,7 @@ class Environment {
             circle.setPosition(pos);
             circle.setFillColor(color);
 
-            Verlet verlet(circle, gravity);
+            Verlet verlet(circle, gravity, bounds);
 
             objects.push_back(verlet);
         }
@@ -41,6 +42,10 @@ class Environment {
 
         sf::Vector2f getGravity() {
             return gravity;
+        }
+
+        sf::Vector2u getBounds() {
+            return bounds;
         }
 
     private:
@@ -60,23 +65,28 @@ class Environment {
                 sf::Vector2f position = object.getCircle().getPosition();
                 float radius = object.getCircle().getRadius();
 
-                // Check left and right bounds
-                if (position.x < 0) {
-                    position.x = 0;
-                } else if (position.x + 2 * radius > bounds.x) {
-                    position.x = bounds.x - 2 * radius;
+                // save old position
+                object.setOldPosition(position);
+
+                // when radius collides with bounds, reverse the velocity
+                if (position.x - radius < 0 || position.x + radius > bounds.x) {
+                    object.addVelocity({-object.getVelocity().x, 0.0f});
                 }
 
-                // Check top and bottom bounds
-                if (position.y < 0) {
-                    position.y = 0;
-                } else if (position.y + 2 * radius > bounds.y) {
-                    position.y = bounds.y - 2 * radius;
+                if (position.y - radius < 0 || position.y + radius > bounds.y) {
+                    object.addVelocity({0.0f, -object.getVelocity().y});
                 }
+            }
+        }
 
-                object.setOldPosition(object.getPosition());
-                object.getCircle().move(position);
-                object.setPosition(position);
+        void removeDisappearedCircles() {
+            for (auto& object: objects) {
+                sf::Vector2f position = object.getCircle().getPosition();
+                float radius = object.getCircle().getRadius();
+
+                if (position.y + radius > bounds.y) {
+                    objects.erase(objects.begin());
+                }
             }
         }
 };

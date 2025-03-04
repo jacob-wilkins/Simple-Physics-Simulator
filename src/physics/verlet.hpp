@@ -6,18 +6,11 @@ class Verlet {
     public:
         Verlet() = default;
 
-        Verlet(sf::CircleShape circle, sf::Vector2f gravity) : circle{circle}, position{circle.getPosition()}, oldPosition{circle.getPosition()}, gravity{gravity} {}
+        Verlet(sf::CircleShape circle, sf::Vector2f gravity, sf::Vector2u bounds) : 
+            circle{circle}, position{circle.getPosition()}, oldPosition{circle.getPosition()}, gravity{gravity}, bounds{bounds} {}
 
         sf::CircleShape getCircle() const {
             return circle;
-        }
-
-        sf::Vector2f getPosition() {
-            return position;
-        }
-
-        void setPosition(sf::Vector2f pos) {
-            position = pos;
         }
 
         void setOldPosition(sf::Vector2f pos) {
@@ -40,10 +33,22 @@ class Verlet {
             // update the positions of all objects
             // gravity, acceleration, position, etc
             addVelocity(gravity);
-            checkBounds(); // TODO
+            checkBounds(bounds);
+
+            printf("Velocity: %f, %f\n", velocity.x, velocity.y);
+
             oldPosition = position;
             circle.move(velocity);
-            position = circle.getPosition();
+        }
+
+        void checkBounds(sf::Vector2u bounds) {
+            if (position.x < 0 || position.x > bounds.x) {
+                velocity.x *= -0.7;
+            }
+
+            if (position.y < 0 || position.y > bounds.y) {
+                velocity.y *= -0.5;
+            }
         }
 
     private:
@@ -53,4 +58,5 @@ class Verlet {
         sf::Vector2f acceleration;
         sf::Vector2f velocity;
         sf::Vector2f gravity;
+        sf::Vector2u bounds;
 };
